@@ -1,0 +1,3 @@
+[submodule "sign_language_identifier"]
+	path = sign_language_identifier
+	url = https://github.com/nywilliams4232/sign_language_identifier
