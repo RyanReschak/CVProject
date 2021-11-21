@@ -1,16 +1,23 @@
-# This is a sample Python script.
+import cv2
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+def cameraRun():
+    vid = cv2.VideoCapture(0)
+    while (True):
+
+        _, frame = vid.read()
+
+        # Display the resulting frame
+        cv2.imshow('frame', frame)
+
+        #hit q to exit
+        #we're 'anding' in this to grab the last 8 digits to compare to ord('q')
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    vid.release()
+    cv2.destroyAllWindows()
 
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    cameraRun()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
