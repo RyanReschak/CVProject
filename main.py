@@ -1,10 +1,27 @@
 import cv2
+import aruco
+import numpy as np
+
 
 def cameraRun():
     vid = cv2.VideoCapture(0)
     while (True):
 
-        _, frame = vid.read()
+        got_img, frame = vid.read()
+        if not got_img:
+            break
+
+        corners, ids, rvec, tvec = aruco.aruco(frame)
+        if ids is not None:
+            # draw pose on markers
+            f = 675.0
+            K = np.array([[f, 0, frame.shape[1]/2],
+                          [0, f, frame.shape[0]/2],
+                          [0, 0, 1.0]])
+            cv2.aruco.drawDetectedMarkers(image=frame, corners=corners, ids=ids,
+                                          borderColor=(0, 0, 255))
+            cv2.aruco.drawAxis(image=frame, cameraMatrix=K, distCoeffs=np.zeros(4),
+                               rvec=rvec, tvec=tvec, length=1.0)
 
         # Display the resulting frame
         cv2.imshow('frame', frame)
