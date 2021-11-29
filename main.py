@@ -1,27 +1,24 @@
 import cv2
 import aruco
 import numpy as np
-
+from sign_language_identifier.sign_language_nn import SLCNN
+from sign_language_identifier.hand_track import handTrack
 
 def cameraRun():
+    model = SLCNN()
+    model.load_weights("sign_language_identifier/weights_slnn4.w")
+    tracker = handTrack()
     vid = cv2.VideoCapture(0)
+
     while (True):
 
         got_img, frame = vid.read()
         if not got_img:
             break
 
-        corners, ids, rvec, tvec = aruco.aruco(frame)
-        if ids is not None:
-            # draw pose on markers
-            f = 675.0
-            K = np.array([[f, 0, frame.shape[1]/2],
-                          [0, f, frame.shape[0]/2],
-                          [0, 0, 1.0]])
-            cv2.aruco.drawDetectedMarkers(image=frame, corners=corners, ids=ids,
-                                          borderColor=(0, 0, 255))
-            cv2.aruco.drawAxis(image=frame, cameraMatrix=K, distCoeffs=np.zeros(4),
-                               rvec=rvec, tvec=tvec, length=1.0)
+        corners, ids, rvec, tvec = aruco.aruco(frame, draw=True)
+
+        tracker.findHands(frame)
 
         # Display the resulting frame
         cv2.imshow('frame', frame)
