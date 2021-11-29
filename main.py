@@ -1,6 +1,12 @@
 import cv2
-import aruco
 import numpy as np
+import sys
+
+#import files
+sys.path.append('/sign_language_identifier/main.py')
+import aruco
+import main as cam
+
 
 
 def cameraRun():
@@ -36,5 +42,5 @@ def cameraRun():
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    cameraRun()
+    cam.main()
 
