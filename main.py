@@ -3,10 +3,9 @@ import numpy as np
 import sys
 
 #import files
-sys.path.append('/sign_language_identifier/main.py')
+sys.path.append('sign_language_identifier/ASL.py')
 import aruco
-import main as cam
-
+import sign_language_identifier.ASL as ASL
 
 
 def cameraRun():
@@ -42,5 +41,5 @@ def cameraRun():
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    cam.main()
+    ASL.port()
 
