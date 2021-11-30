@@ -9,15 +9,20 @@ characters = ["A", "B", "C", "D", "E", "F", "G",
                   "P", "Q", "R", "S", "T", "U", "V",
                   "W", "X", "Y", "Z"]
 
-
-def wordTrack():
-    cam = cv2.VideoCapture(0)
+def loadModel():
     hands = handTrack()
     model = SLNN()
     model.load_weights()
+    return hands, model
+
+def wordTrack(hands, model):
+    cam = cv2.VideoCapture(0)
+
 
     LEFT_HAND = 0
     RIGHT_HAND = 1
+    #letter Q isn't commonly used so have three of them signal wanting to exit
+    numQs = 0
 
     preference_hand = RIGHT_HAND
     previous_char = '0'
@@ -39,7 +44,7 @@ def wordTrack():
             handLM = hands.findPosition(img, handNum=preference_hand)
 
         if (handLM != []):
-            if numFalse + numChar > 20: #if too many vals, remove some instances
+            if numFalse + numChar > 30: #if too many vals, remove some instances
                 numFalse -= 1
                 numChar -= 1
 
@@ -65,9 +70,12 @@ def wordTrack():
             img = cv2.putText(img, predicted_char,
                                   (hand_img_dims[2], hand_img_dims[3]), color=(0, 255, 0),
                                   fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1)
-            if numChar > 10:
-                full_word += predicted_char
-                print("placed")
+            if numChar > 15:
+                full_word += predicted_char # add new predicted letter to word
+                if predicted_char == 'Q':
+                    numQs += 1
+                    if numQs == 3: #return word if number of Qs is 3
+                        return full_word[:len(full_word)-2]
                 numChar = 0
                 numFalse = 0
 

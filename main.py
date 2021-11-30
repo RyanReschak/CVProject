@@ -5,5 +5,6 @@ import ASL
 
 
 if __name__ == '__main__':
-    word = ASL.wordTrack()
+    hands, model = ASL.loadModel()
+    word = ASL.wordTrack(hands, model) #can be called repeatedly when needed
 
