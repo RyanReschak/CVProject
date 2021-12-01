@@ -1,8 +1,9 @@
 #ASL PORTION
 import cv2
 import numpy as np
+import aruco as ar
 from sign_language_identifier.hand_track import handTrack
-from sign_language_identifier.sign_language_nn import SLNN
+from sign_language_identifier.sign_language_nn import SLCNN
 
 characters = ["A", "B", "C", "D", "E", "F", "G",
                   "H", "I","J", "K", "L", "M", "N", "O",
@@ -11,13 +12,17 @@ characters = ["A", "B", "C", "D", "E", "F", "G",
 
 def loadModel():
     hands = handTrack()
-    model = SLNN()
-    model.load_weights()
+    model = SLCNN()
+    model.load_weights("sign_language_identifier/weights_slnn4.w")
     return hands, model
 
 def wordTrack(hands, model):
     cam = cv2.VideoCapture(0)
 
+    frame_width = int(cam.get(3))
+    frame_height = int(cam.get(4))
+    out = cv2.VideoWriter('sign_language_augmented.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 10,
+                          (frame_width, frame_height))
 
     LEFT_HAND = 0
     RIGHT_HAND = 1
@@ -70,7 +75,7 @@ def wordTrack(hands, model):
             img = cv2.putText(img, predicted_char,
                                   (hand_img_dims[2], hand_img_dims[3]), color=(0, 255, 0),
                                   fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1)
-            if numChar > 15:
+            if numChar > 20:
                 full_word += predicted_char # add new predicted letter to word
                 if predicted_char == 'Q':
                     numQs += 1
@@ -78,11 +83,12 @@ def wordTrack(hands, model):
                         return full_word[:len(full_word)-2]
                 numChar = 0
                 numFalse = 0
-
+        ar.aruco(img, draw=True)
         img = cv2.putText(img, full_word,
                           (100, 100), color=(0, 255, 0),
                           fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1)
         cv2.imshow("Camera", img)
+        out.write(img)
 
         if (cv2.waitKey(25) & 0xFF == ord('q')):
             break
