@@ -24,8 +24,8 @@ def aruco(img, draw=False):
         if (draw):
             cv2.aruco.drawDetectedMarkers(image=img, corners=corners, ids=ids,
                                       borderColor=(0, 0, 255))
-            cv2.aruco.drawAxis(image=img, cameraMatrix=K, distCoeffs=np.zeros(4),
-                           rvec=rvecs, tvec=tvecs, length=1.0)
+            #cv2.aruco.drawAxis(image=img, cameraMatrix=K, distCoeffs=np.zeros(4),
+            #               rvec=rvecs, tvec=tvecs, length=1.0)
 
         return corners, ids, rvec_m_c, tm_c
 

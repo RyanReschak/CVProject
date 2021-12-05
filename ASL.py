@@ -34,6 +34,10 @@ def wordTrack(hands, model):
     numChar = 0
     numFalse = 0
     full_word = ""
+    predicted_char = ""
+
+    f = 554
+    K = np.array(((f, 0, int((cam.get(cv2.CAP_PROP_FRAME_WIDTH)/2))), (0, f, int((cam.get(cv2.CAP_PROP_FRAME_HEIGHT))/2)), (0, 0, 1)), dtype=np.float32)
     while True:
         success, img = cam.read()
 
@@ -72,9 +76,9 @@ def wordTrack(hands, model):
             else:
                 numFalse += 1
             previous_char = predicted_char
-            img = cv2.putText(img, predicted_char,
-                                  (hand_img_dims[2], hand_img_dims[3]), color=(0, 255, 0),
-                                  fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1)
+            #img = cv2.putText(img, predicted_char,
+             #                     (hand_img_dims[2], hand_img_dims[3]), color=(0, 255, 0),
+              #                    fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1)
             if numChar > 20:
                 full_word += predicted_char # add new predicted letter to word
                 if predicted_char == 'Q':
@@ -83,10 +87,20 @@ def wordTrack(hands, model):
                         return full_word[:len(full_word)-2]
                 numChar = 0
                 numFalse = 0
-        ar.aruco(img, draw=True)
-        img = cv2.putText(img, full_word,
-                          (100, 100), color=(0, 255, 0),
-                          fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1)
+        corners, ids, rvec_m_c, tm_c = ar.aruco(img, draw=True)
+
+        if ids != None:
+
+            pImg, J = cv2.projectPoints(objectPoints=np.array((1,0.5,0),dtype=np.float32), rvec=rvec_m_c, tvec=tm_c, cameraMatrix=K,
+                                    distCoeffs=None)
+            #print(pImg[0][0])
+            letter = ""
+            if full_word != "":
+                letter = full_word[-1]
+            cv2.putText(img, predicted_char,
+                          tuple(np.int32(pImg[0][0])), color=(0, 255, 0),
+                          fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=5)
+
         cv2.imshow("Camera", img)
         out.write(img)
 
