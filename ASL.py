@@ -13,7 +13,7 @@ characters = ["A", "B", "C", "D", "E", "F", "G",
 def loadModel():
     hands = handTrack()
     model = SLCNN()
-    model.load_weights("sign_language_identifier/weights_slnn4.w")
+    model.load_weights("sign_language_identifier/weights_slnn5.w")
     return hands, model
 
 def wordTrack(hands, model):
@@ -21,7 +21,7 @@ def wordTrack(hands, model):
 
     frame_width = int(cam.get(3))
     frame_height = int(cam.get(4))
-    out = cv2.VideoWriter('sign_language_augmented.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 10,
+    out = cv2.VideoWriter('sign_language_augmented2.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 10,
                           (frame_width, frame_height))
 
     LEFT_HAND = 0
