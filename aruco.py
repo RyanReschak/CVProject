@@ -11,6 +11,7 @@ def aruco(img, draw=False):
     arucoDict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_100)
     corners, ids, _ = cv2.aruco.detectMarkers(image=img, dictionary=arucoDict)
     if ids is not None:
+        #Get Rotation and Translation Vectors
         f = 675.0
         K = np.array([[f, 0, img.shape[1]/2],
                       [0, f, img.shape[0]/2],
@@ -21,6 +22,7 @@ def aruco(img, draw=False):
         rvec_m_c = rvecs[0]
         tm_c = tvecs[0]
 
+        #Draw the Aruco Marker Axis if True
         if (draw):
             cv2.aruco.drawDetectedMarkers(image=img, corners=corners, ids=ids,
                                       borderColor=(0, 0, 255))
